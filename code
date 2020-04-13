@@ -1,0 +1,133 @@
+package myGame.company;
+
+import java.lang.reflect.Array;
+import java.util.*;
+
+public class Main {
+    static ArrayList<Integer> playerPos= new ArrayList<>();
+    static ArrayList<Integer> CPUPos= new ArrayList<>();
+
+    public static void main(String[] args) {
+        char [][] TicTacToe ={{' ','|',' ','|',' '},
+                              {'-','-','-','-','-'},
+                              {' ','|',' ','|',' '},
+                              {'-','-','-','-','-'},
+                              {' ','|',' ','|',' '}};
+        print(TicTacToe);
+        while(true) {
+            Scanner scn = new Scanner(System.in);
+            System.out.println("Enter your number where you want to set symbol (1-9):");
+
+            int rank = scn.nextInt();
+            while(playerPos.contains(rank) || CPUPos.contains(rank)){
+                System.out.println("Error, Sorry Number is already taken!!... Enter Valid Number");
+                rank =scn.nextInt();
+            }
+
+            getInput(TicTacToe, rank, "Player");
+            String result = cheakWinner();
+            if(result.length() > 0){
+                System.out.println(result);
+                break;
+            }
+
+            Random AI = new Random(); //for CPU inputs
+            int cpuPosition = AI.nextInt(9) + 1;
+            while(playerPos.contains(cpuPosition) || CPUPos.contains(cpuPosition)){
+                cpuPosition = AI.nextInt(9) + 1;
+            }
+            getInput(TicTacToe, cpuPosition, "CPU");
+
+            print(TicTacToe);
+            result = cheakWinner();
+           if(result.length() > 0){
+               System.out.println(result);
+               break;
+           }
+
+        }
+    } //end of main method
+    public static void print(char[][]TicTacToe){ //for printing purpose
+        for(char[] row : TicTacToe){
+            for(char c : row){
+                System.out.print(c);
+            }
+            System.out.println();
+        }
+
+    } //end of printing method
+    public static void getInput(char[][] TicTacToe, int rank, String user){ //this take input from user
+            char Symbol = ' ';
+        if(user.equals("Player")){
+            Symbol = 'O';
+            playerPos.add(rank);
+        }else if(user.equals("CPU"))
+        {
+            Symbol = 'X';
+            CPUPos.add(rank);
+        }
+        switch(rank) {
+            case 1:
+                TicTacToe[0][0] = Symbol;
+                break;
+            case 2:
+                TicTacToe[0][2] = Symbol;
+                break;
+            case 3:
+                TicTacToe[0][4] = Symbol;
+                break;
+            case 4:
+                TicTacToe[2][0] = Symbol;
+                break;
+            case 5:
+                TicTacToe[2][2] = Symbol;
+                break;
+            case 6:
+                TicTacToe[2][4] = Symbol;
+                break;
+            case 7:
+                TicTacToe[4][0] = Symbol;
+                break;
+            case 8:
+                TicTacToe[4][2] = Symbol;
+                break;
+            case 9:
+                TicTacToe[4][4] = Symbol;
+                break;
+            default:
+                break;
+        } //end of switch statement
+    } //end of getinput method
+    public static String cheakWinner(){   //this methods cheak the winner
+        List topRow = Arrays.asList(1, 2, 3);
+        List midRow = Arrays.asList(4, 5, 6);
+        List bottomRow = Arrays.asList(7, 8, 9);
+        List leftCol = Arrays.asList(1, 4, 7);
+        List midCol = Arrays.asList(2, 5, 8);
+        List rightCol = Arrays.asList(3, 6, 9);
+        List firstDia = Arrays.asList(1, 5, 9);
+        List secondDia = Arrays.asList(3, 5, 7);
+
+        List<List> cheakForWinning = new ArrayList<List>();
+        cheakForWinning.add(topRow);
+        cheakForWinning.add(midRow);
+        cheakForWinning.add(bottomRow);
+        cheakForWinning.add(leftCol);
+        cheakForWinning.add(midCol);
+        cheakForWinning.add(rightCol);
+        cheakForWinning.add(firstDia);
+        cheakForWinning.add(secondDia);
+
+        for(List lst : cheakForWinning){
+            if(playerPos.containsAll(lst)){
+                return "Congratulation you won!!!";
+            }else if(CPUPos.containsAll(lst)){
+                return "Oooops CPU Wins... Better Luck Next Time ";
+            }else if(playerPos.size() + CPUPos.size() == 9){
+                return "OHHH Tough Game But Its a TIE....\nBetter Luck Next Time";
+            }
+        }
+
+        return "";
+    } //end of cheakWinner method
+} //end of program
